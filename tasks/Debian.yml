@@ -15,7 +15,7 @@
 - name: Debian/Ubuntu - Prepare GPG key to be used with apt
   command:  gpg --dearmor < /tmp/hashicorp-archive-keyring.gpg > /etc/apt/keyrings/hashicorp-archive-keyring.gpg
   changed_when: false
-  no_log: true
+  #no_log: true
 
 - name: Debian/Ubuntu - Adding Hashicorp repository 
   ansible.builtin.apt_repository:
