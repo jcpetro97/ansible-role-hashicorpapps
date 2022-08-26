@@ -15,11 +15,11 @@
 
     - name: Debian/Ubuntu - Prepare GPG key to be used with apt
       ansible.builtin.shell:  
-        cmd: "gpg --dearmor < /tmp/hashicorp-archive-keyring.gpg | tee /etc/apt/keyrings/hashicorp-archive-keyring.gpg"
+        cmd: "gpg --dearmor < /tmp/hashicorp-archive-keyring.gpg | tee /usr/share/keyrings/hashicorp-archive-keyring.gpg"
 
     - name: Debian/Ubuntu - Adding Hashicorp repository 
       ansible.builtin.apt_repository:
-        repo: "deb [signed-by=/etc/apt/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+        repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
         filename: hashicorp
         state: present
 
