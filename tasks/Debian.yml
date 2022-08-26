@@ -1,32 +1,40 @@
 ---
-- name: "Debian/Ubuntu - Install Hashicorp official gpg key"
-  ansible.builtin.apt_key:
+# - name: Debian/Ubuntu - Install Hashicorp official gpg key
+#   ansible.builtin.apt_key:
+#     url: http://apt.releases.hashicorp.com/gpg
+#     file: "/usr/share/keyrings/hashicorp-archive-keyring.gpg"
+#     state: present
+    
+- name: Debian/Ubuntu - Get GPG Key and put it into /etc/apt/keyrings
+  ansible.builtin.get_url:
     url: http://apt.releases.hashicorp.com/gpg
-    state: present
+    dest: /etc/apt/keyrings/hashicorp-archive-keyring.gpg
+    mode: '0644'
+    force: true
 
-- name: "Debian/Ubuntu - Installing deb repository"
+- name: Debian/Ubuntu - Installing deb repository
   ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+    repo: "deb [signed-by=/etc/apt/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
     filename: hashicorp
     state: present
 
-- name: "Debian/Ubuntu - Install Packer"
+- name: Debian/Ubuntu - Install Packer
   ansible.builtin.apt:
     name: packer
     update_cache: yes
     cache_valid_time: 300
-    state: "{{HashiCorpApps_Packer_State | default('present')"
+    state: "{{ HashiCorpApps_Packer_State | default('present') }}"
 
-- name: "Debian/Ubuntu - Install Vagrant"
+- name: Debian/Ubuntu - Install Vagrant
   ansible.builtin.apt:
     name: vagrant
     update_cache: yes
     cache_valid_time: 300
-    state: "{{HashiCorpApps_Vagrant_State | default('present')"
+    state: "{{ HashiCorpApps_Vagrant_State | default('present') }}"
 
-- name: "Debian/Ubuntu - Install Vault"
+- name: Debian/Ubuntu - Install Vault
   ansible.builtin.apt:
     name: vault
     update_cache: yes
     cache_valid_time: 300
-    state: "{{HashiCorpApps_Vault_State | default('absent')"
+    state: "{{  HashiCorpApps_Vault_State | default('absent') }}"
