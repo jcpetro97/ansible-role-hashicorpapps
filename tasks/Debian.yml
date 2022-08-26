@@ -1,21 +1,30 @@
 ---
-# - name: Debian/Ubuntu - Install Hashicorp official gpg key
-#   ansible.builtin.apt_key:
-#     url: http://apt.releases.hashicorp.com/gpg
-#     file: "/usr/share/keyrings/hashicorp-archive-keyring.gpg"
-#     state: present
-    
+- name: Debian/Ubuntu - Check to see if a repository is already defined on the host
+  ansible.builtin.stat:
+    path: /etc/apt/sources.list.d/hashicorp.list
+  register: _hashicorpapps_repofile
+
 - name: Debian/Ubuntu - Get GPG key and put it into /etc/apt/keyrings
   ansible.builtin.get_url:
     url: http://apt.releases.hashicorp.com/gpg
     dest: /tmp/hashicorp-archive-keyring.gpg
     mode: '0644'
     force: true
+  when: not _hashicorpapps_repofile.stat.exists
 
 - name: Debian/Ubuntu - Prepare GPG key to be used with apt
-  command:  gpg --dearmor < /tmp/hashicorp-archive-keyring.gpg > /etc/apt/keyrings/hashicorp-archive-keyring.gpg
-  changed_when: false
+  ansible.builtin.shell:  
+    cmd: "gpg --dearmor < /tmp/hashicorp-archive-keyring.gpg | tee /etc/apt/keyrings/hashicorp-archive-keyring.gpg"
+  #changed_when: false
   #no_log: true
+  when: not _hashicorpapps_repofile.stat.exists
+
+
+- name: Debian/Ubuntu - Clean up Temporary GPG file
+  ansible.builtin.file:
+    path: /tmp/hashicorp-archive-keyring.gpg
+    state: absent
+  when: not _hashicorpapps_repofile.stat.exists
 
 - name: Debian/Ubuntu - Adding Hashicorp repository 
   ansible.builtin.apt_repository:
