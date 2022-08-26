@@ -5,14 +5,19 @@
 #     file: "/usr/share/keyrings/hashicorp-archive-keyring.gpg"
 #     state: present
     
-- name: Debian/Ubuntu - Get GPG Key and put it into /etc/apt/keyrings
-  ansible.builtin.get_url:
+- name: Debian/Ubuntu - Get GPG key and put it into /etc/apt/keyrings
+  ansible.builtin.command:
     url: http://apt.releases.hashicorp.com/gpg
-    dest: /etc/apt/keyrings/hashicorp-archive-keyring.gpg
+    dest: /tmp/hashicorp-archive-keyring.gpg
     mode: '0644'
     force: true
 
-- name: Debian/Ubuntu - Installing deb repository
+- name: Debian/Ubuntu - Prepare GPG key to be used with apt
+  command:  gpg --dearmor < /tmp/hashicorp-archive-keyring.gpg > /etc/apt/keyrings/hashicorp-archive-keyring.gpg
+  changed_when: false
+  no_log: true
+
+- name: Debian/Ubuntu - Adding Hashicorp repository 
   ansible.builtin.apt_repository:
     repo: "deb [signed-by=/etc/apt/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
     filename: hashicorp
