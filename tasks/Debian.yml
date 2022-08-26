@@ -6,7 +6,7 @@
 #     state: present
     
 - name: Debian/Ubuntu - Get GPG key and put it into /etc/apt/keyrings
-  ansible.builtin.command:
+  ansible.builtin.get_url:
     url: http://apt.releases.hashicorp.com/gpg
     dest: /tmp/hashicorp-archive-keyring.gpg
     mode: '0644'
