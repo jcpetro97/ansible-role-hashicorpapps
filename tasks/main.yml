@@ -1,2 +1,3 @@
 ---
-# tasks file for HashiCorpApps
+- name: Setup Repository and install Hashicorp Applications ( Packer/Vagrant/Vault) for  {{ ansible_distribution }}
+  include_tasks: "{{ ansible_distribution }}.yml"
