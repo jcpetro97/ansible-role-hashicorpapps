@@ -49,3 +49,10 @@
     update_cache: yes
     cache_valid_time: 300
     state: "{{  HashiCorpApps_Vault_State | default('absent') }}"
+
+- name: Debian/Ubuntu - Install Terraform
+  ansible.builtin.apt:
+    name: vault
+    update_cache: yes
+    cache_valid_time: 300
+    state: "{{  HashiCorpApps_Terraform_State | default('absent') }}"
