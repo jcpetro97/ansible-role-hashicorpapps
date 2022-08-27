@@ -1,2 +1,33 @@
 ---
-# tasks file for HashiCorpApps
+- name: RedHat - Check to see if a repository is already defined on the host
+  ansible.builtin.stat:
+    path: /etc/yum.repos.d/hashicorp.repo
+  register: _hashicorpapps_repofile
+
+- name: RedHat - Add repository
+  ansible.builtin.yum_repository:
+    name: hashicorp
+    description: Hashicorp YUM repo
+    baseurl: https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+  when: not _hashicorpapps_repofile.stat.exists
+
+- name: RedHat - Install Packer
+  ansible.builtin.dnf:
+    name: packer
+    update_cache: yes
+    cache_valid_time: 300
+    state: "{{ HashiCorpApps_Packer_State | default('present') }}"
+
+- name: RedHat - Install Vagrant
+  ansible.builtin.dnf:
+    name: vagrant
+    update_cache: yes
+    cache_valid_time: 300
+    state: "{{ HashiCorpApps_Vagrant_State | default('present') }}"
+
+- name: RedHat - Install Vault
+  ansible.builtin.dnf:
+    name: vault
+    update_cache: yes
+    cache_valid_time: 300
+    state: "{{  HashiCorpApps_Vault_State | default('absent') }}"
