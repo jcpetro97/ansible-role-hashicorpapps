@@ -15,19 +15,16 @@
   ansible.builtin.dnf:
     name: packer
     update_cache: yes
-    cache_valid_time: 300
     state: "{{ HashiCorpApps_Packer_State | default('present') }}"
 
 - name: RedHat - Install Vagrant
   ansible.builtin.dnf:
     name: vagrant
     update_cache: yes
-    cache_valid_time: 300
     state: "{{ HashiCorpApps_Vagrant_State | default('present') }}"
 
 - name: RedHat - Install Vault
   ansible.builtin.dnf:
     name: vault
     update_cache: yes
-    cache_valid_time: 300
     state: "{{  HashiCorpApps_Vault_State | default('absent') }}"
